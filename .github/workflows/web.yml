@@ -1,0 +1,54 @@
+# Tests, build de la version navigateur (pygbag) et publication sur GitHub Pages
+# a chaque push sur main. Adresse : https://glimen.github.io/AimToLearn/
+name: Version web
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:  # lancement manuel depuis l'onglet Actions
+
+permissions:
+  contents: read
+  pages: write     # publication sur Pages
+  id-token: write  # authentification de deploy-pages
+
+# Un seul deploiement a la fois ; un push plus recent remplace celui en attente
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      # Les tests portent sur la logique pure : stdlib uniquement, pas besoin de pygame
+      - name: Tests
+        run: python -m unittest discover -s tests -t .
+
+      # Version figee : c'est celle qui a ete testee en local
+      - name: Build pygbag
+        run: |
+          pip install pygbag==0.9.3
+          python -m pygbag --build .
+
+      - uses: actions/configure-pages@v6
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: build/web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
