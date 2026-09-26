@@ -68,6 +68,10 @@ class SessionTest(unittest.TestCase):
         self.assertAlmostEqual(summary.precision, 1.0)
         self.assertEqual(summary.points, round(good.global_score * 100))
 
+    def test_only_full_game_is_ranked(self) -> None:
+        self.assertTrue(Session().ranked)
+        self.assertFalse(Session(start_level=3).ranked)
+
     def test_empty_session(self) -> None:
         summary = Session().summary()
         self.assertEqual(summary.points, 0)

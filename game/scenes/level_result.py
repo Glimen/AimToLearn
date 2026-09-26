@@ -4,8 +4,10 @@ import pygame
 
 from config.levels import LEVELS
 from config.settings import COLORS, PASS_THRESHOLD, RESULT_INPUT_DELAY, SCREEN_WIDTH
+from game.progress import unlock_after
 from game.scene_manager import Scene, SceneManager
 from game.scoring import LevelScore, Session
+from lib.storage import load_progress, save_progress
 from lib.ui import Button, draw_text
 
 
@@ -33,6 +35,11 @@ class LevelResultScene(Scene):
         self.retry_button = Button("Réessayer", (cx - 320, 600))
         self.end_button = Button("Terminer", (cx + 320, 600))
         manager.sounds.play("success" if score.passed else "fail")
+        # Sauvegarde immediate : le niveau suivant reste debloque meme si on quitte ici
+        unlocked = load_progress()
+        new_unlocked = unlock_after(unlocked, level_index, score.passed, len(LEVELS))
+        if new_unlocked != unlocked:
+            save_progress(new_unlocked)
 
     def update(self, dt: float) -> None:
         """Decompte le delai de protection des boutons."""

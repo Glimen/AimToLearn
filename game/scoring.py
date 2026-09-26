@@ -120,9 +120,23 @@ def compute_level_score(stats: LevelStats, reference_throughput: float = REFEREN
 
 @dataclass
 class Session:
-    """Resultats d'une session de jeu : un score par niveau (le dernier essai compte)."""
+    """Resultats d'une session de jeu : un score par niveau (le dernier essai compte).
+
+    Attributes:
+        results: Score de chaque niveau joue, par index.
+        start_level: Index du niveau de depart (0 = partie complete depuis le niveau 1).
+    """
 
     results: dict[int, LevelScore] = field(default_factory=dict)
+    start_level: int = 0
+
+    @property
+    def ranked(self) -> bool:
+        """Vrai si la session peut entrer au tableau des scores (commencee au niveau 1).
+
+        Sans cette regle, commencer directement a un niveau avance fausserait le classement.
+        """
+        return self.start_level == 0
 
     def record(self, level_index: int, score: LevelScore) -> None:
         """Enregistre le score d'un niveau, en remplacant un essai precedent."""

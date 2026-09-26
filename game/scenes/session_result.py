@@ -20,8 +20,10 @@ class SessionResultScene(Scene):
     def __init__(self, manager: SceneManager, session: Session) -> None:
         super().__init__(manager)
         self.summary = session.summary()
+        self.start_level = session.start_level
         self.entries = load_entries()
-        self.can_register = qualifies(self.entries, self.summary.points)
+        # Seule une partie commencee au niveau 1 peut entrer au tableau
+        self.can_register = session.ranked and qualifies(self.entries, self.summary.points)
         self.name = ""
         self.elapsed = 0.0
         label = "Valider" if self.can_register else "Continuer"
@@ -89,6 +91,16 @@ class SessionResultScene(Scene):
             pygame.draw.rect(surface, COLORS["highlight"], box, 2, border_radius=8)
             cursor = "_" if int(self.elapsed / CURSOR_BLINK) % 2 == 0 else " "
             draw_text(surface, self.name + cursor, 42, COLORS["text"], center=box.center)
+        elif self.start_level > 0:
+            draw_text(
+                surface,
+                f"Partie commencée au niveau {self.start_level + 1} : score non enregistré au tableau.",
+                32, COLORS["text_dim"], center=(cx, 500),
+            )
+            draw_text(
+                surface, "Commence au niveau 1 pour entrer au tableau des scores.",
+                28, COLORS["text_dim"], center=(cx, 545),
+            )
         else:
             draw_text(surface, "Pas de place au tableau cette fois-ci.", 34, COLORS["text_dim"], center=(cx, 520))
         self.button.draw(surface)

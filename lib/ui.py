@@ -59,24 +59,32 @@ def wrap_text(text: str, size: int, max_width: int) -> list[str]:
 
 
 class Button:
-    """Bouton rectangulaire cliquable au clic gauche."""
+    """Bouton rectangulaire cliquable au clic gauche ; grise et inerte si desactive."""
 
-    def __init__(self, label: str, center: tuple[int, int], width: int = 300, height: int = 56) -> None:
+    def __init__(
+        self, label: str, center: tuple[int, int], width: int = 300, height: int = 56, enabled: bool = True
+    ) -> None:
         self.label = label
+        self.enabled = enabled
         self.rect = pygame.Rect(0, 0, width, height)
         self.rect.center = center
 
     def is_clicked(self, event: pygame.event.Event) -> bool:
         """Indique si l'evenement est un clic gauche sur le bouton."""
         return (
-            event.type == pygame.MOUSEBUTTONDOWN
+            self.enabled
+            and event.type == pygame.MOUSEBUTTONDOWN
             and event.button == pygame.BUTTON_LEFT
             and self.rect.collidepoint(event.pos)
         )
 
     def draw(self, surface: pygame.Surface) -> None:
-        """Dessine le bouton, plus clair au survol."""
-        hovered = self.rect.collidepoint(pygame.mouse.get_pos())
-        color = COLORS["button_hover"] if hovered else COLORS["button"]
+        """Dessine le bouton, plus clair au survol, grise s'il est desactive."""
+        if not self.enabled:
+            color, text_color = COLORS["button_disabled"], COLORS["text_dim"]
+        elif self.rect.collidepoint(pygame.mouse.get_pos()):
+            color, text_color = COLORS["button_hover"], COLORS["text"]
+        else:
+            color, text_color = COLORS["button"], COLORS["text"]
         pygame.draw.rect(surface, color, self.rect, border_radius=10)
-        draw_text(surface, self.label, 34, COLORS["text"], center=self.rect.center)
+        draw_text(surface, self.label, 34, text_color, center=self.rect.center)

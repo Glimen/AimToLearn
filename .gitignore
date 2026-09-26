@@ -13,3 +13,4 @@ dist-debug/
 
 # Donnees locales du joueur
 scores.json
+progress.json

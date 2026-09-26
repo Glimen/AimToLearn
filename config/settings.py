@@ -10,17 +10,17 @@ IS_WEB: bool = sys.platform == "emscripten"
 IS_FROZEN: bool = getattr(sys, "frozen", False)
 
 
-def _scores_file() -> Path:
-    """Emplacement du fichier des scores en desktop.
+def _data_dir() -> Path:
+    """Dossier des fichiers de sauvegarde (scores, progression) en desktop.
 
     Dans l'exe PyInstaller, le code est extrait dans un dossier temporaire efface
-    a la fermeture : les scores vont alors dans le dossier de donnees de
+    a la fermeture : les sauvegardes vont alors dans le dossier de donnees de
     l'utilisateur (%APPDATA% sous Windows, ~/.local/share ailleurs).
     """
     if IS_FROZEN:
         base = Path(os.environ.get("APPDATA") or Path.home() / ".local" / "share")
-        return base / "AimToLearn" / "scores.json"
-    return Path(__file__).resolve().parent.parent / "scores.json"
+        return base / "AimToLearn"
+    return Path(__file__).resolve().parent.parent
 
 # --- Affichage ---
 SCREEN_WIDTH: int = 1280
@@ -53,8 +53,10 @@ REFERENCE_THROUGHPUT: float = 3.0
 SCOREBOARD_SIZE: int = 10
 NAME_MAX_LENGTH: int = 15
 DEFAULT_PLAYER_NAME: str = "Joueur"
-SCORES_FILE: Path = _scores_file()
-SCORES_STORAGE_KEY: str = "aimtolearn_scores"  # cle localStorage (version web)
+
+# --- Sauvegardes : <nom>.json dans DATA_DIR (desktop), cle <prefixe><nom> (web) ---
+DATA_DIR: Path = _data_dir()
+STORAGE_KEY_PREFIX: str = "aimtolearn_"
 
 # --- Couleurs : point unique a modifier pour de futurs skins ---
 COLORS: dict[str, tuple[int, ...]] = {
@@ -70,6 +72,7 @@ COLORS: dict[str, tuple[int, ...]] = {
     "miss": (230, 70, 70),
     "button": (60, 110, 200),
     "button_hover": (80, 135, 230),
+    "button_disabled": (50, 56, 70),
     "overlay": (0, 0, 0, 180),
     "scrollbar": (70, 80, 100),
     "highlight": (255, 210, 80),
