@@ -1,0 +1,5 @@
+# Moteur du jeu (fork communautaire de pygame, meme API) - Python 3.10+
+pygame-ce>=2.5
+# Outils de build, inutiles pour jouer :
+pygbag        # export navigateur
+pyinstaller   # exe Windows (voir build_windows.bat, a lancer sous Windows)

@@ -1,0 +1,2 @@
+# Les scripts batch doivent garder des fins de ligne Windows pour cmd.exe
+*.bat text eol=crlf

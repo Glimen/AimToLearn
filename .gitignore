@@ -1,0 +1,15 @@
+# Environnements Python
+.venv/
+.venv-win/
+__pycache__/
+*.pyc
+
+# Sorties de build (pygbag, PyInstaller) : regenerees par les workflows
+build/
+build-debug/
+dist/
+dist-debug/
+*.spec
+
+# Donnees locales du joueur
+scores.json
