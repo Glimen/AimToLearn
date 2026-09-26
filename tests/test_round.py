@@ -124,6 +124,18 @@ class DecoyTest(unittest.TestCase):
         self.assertEqual(game_round.press(1, (decoy.x, decoy.y)), rnd.DECOY)
         self.assertEqual(game_round.stats.clicks_on_target, 0)
 
+    def test_same_shape_for_whole_level(self) -> None:
+        game_round = make_round(total=15, shapes=ALL_SHAPES, decoys=3)
+        expected = game_round.fixed_shape
+        self.assertIn(expected, ALL_SHAPES)
+        while not game_round.finished:
+            self.assertEqual(game_round.target.shape, expected)
+            self.assertNotIn(expected, [d.shape for d in game_round.decoys])
+            game_round.press(1, target_screen_pos(game_round))
+
+    def test_no_fixed_shape_without_decoys(self) -> None:
+        self.assertIsNone(make_round(shapes=ALL_SHAPES).fixed_shape)
+
 
 class DragTest(unittest.TestCase):
     """Niveau glisser-deposer."""

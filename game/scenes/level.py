@@ -54,7 +54,7 @@ class LevelScene(Scene):
         self.viewport = Area(0, HUD_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT - HUD_HEIGHT)
         self.round = rnd.LevelRound(self.level, self.viewport, random.Random())
         self.started = False  # False tant que la consigne est affichee
-        self.demo = GestureDemo(self.level)
+        self.demo = GestureDemo(self.level, self.round.fixed_shape)
         self.end_timer = 0.0
         self.markers: list[_Marker] = []
         self.message = ""
@@ -154,7 +154,8 @@ class LevelScene(Scene):
         for decoy in self.round.decoys:
             draw_shape(surface, decoy.shape, decoy.x, decoy.y - offset, decoy.size, COLORS["target"], COLORS["target_outline"])
         if self.round.target is not None:
-            draw_target(surface, self.round.target, offset)
+            # Avec des leurres, l'arc du temps restant designerait la cible : on le masque
+            draw_target(surface, self.round.target, offset, show_timer=not self.round.decoys)
         surface.set_clip(None)
 
         for marker in self.markers:
@@ -219,7 +220,10 @@ class LevelScene(Scene):
         for line in wrap_text(self.level.instruction, 36, SCREEN_WIDTH - 300):
             draw_text(surface, line, 36, COLORS["text"], center=(cx, y))
             y += 42
-        # Position fixe du panneau : la consigne tient sur deux lignes au plus
+        if self.round.fixed_shape:
+            label = f"Ta forme pour tout le niveau : {SHAPE_LABELS[self.round.fixed_shape]}"
+            draw_text(surface, label, 36, COLORS["highlight"], center=(cx, y))
+        # Position fixe du panneau : consigne (et forme a chercher) sur deux lignes au plus
         panel = pygame.Rect((0, 0), DEMO_PANEL_SIZE)
         panel.midtop = (cx, 270)
         self.demo.draw(surface, panel)

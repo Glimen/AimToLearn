@@ -85,8 +85,7 @@ LEVELS: tuple[LevelConfig, ...] = (
     ),
     LevelConfig(
         name="La bonne forme",
-        instruction="Plusieurs formes apparaissent. Clique seulement sur celle "
-        "indiquée en haut de l'écran.",
+        instruction="Plusieurs formes apparaissent. Clique seulement sur ta forme.",
         size=90,
         lifetime=5.0,
         shapes=ALL_SHAPES,

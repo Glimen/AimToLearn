@@ -70,8 +70,15 @@ def _ease(ratio: float) -> float:
 class GestureDemo:
     """Animation en boucle du geste d'un niveau."""
 
-    def __init__(self, level: LevelConfig) -> None:
+    def __init__(self, level: LevelConfig, target_shape: str | None = None) -> None:
+        """Prepare l'animation.
+
+        Args:
+            level: Niveau dont on montre le geste.
+            target_shape: Forme a chercher (niveau avec leurres), la meme que dans le niveau.
+        """
         self.level = level
+        self.target_shape = target_shape
         self.duration = LOOP_DURATION.get(level.gesture, DEFAULT_LOOP_DURATION)
         self.t = 0.0
 
@@ -98,7 +105,7 @@ class GestureDemo:
         for decoy in frame.decoys:
             draw_shape(surface, decoy.shape, decoy.x, decoy.y, decoy.size, COLORS["target"], COLORS["target_outline"])
         if frame.target is not None:
-            draw_target(surface, frame.target, 0)
+            draw_target(surface, frame.target, 0, show_timer=not self.level.decoys)
         if frame.ring is not None:
             pygame.draw.circle(surface, COLORS["hit"], frame.ring, 22, 3)
         surface.set_clip(None)
@@ -146,8 +153,8 @@ class GestureDemo:
         elif t < hit_time + RING_TIME:
             frame.ring = cursor
         if lvl.decoys:
-            # Leurres fixes d'autres formes, la cible est toujours l'etoile
-            others = [s for s in lvl.shapes if s != "star"]
+            # Leurres fixes, des autres formes que celle a chercher
+            others = [s for s in lvl.shapes if s != self.target_shape]
             spots = ((0.2, 0.3), (0.4, 0.75), (0.85, 0.25))
             size = lvl.size * 0.8  # un peu reduits pour tenir dans le panneau
             for shape, (fx, fy) in zip(others, spots):
@@ -155,10 +162,10 @@ class GestureDemo:
         return frame
 
     def _shape_at(self, t: float) -> str:
-        """Forme de la cible a l'instant t (etoile si leurres, cycle si changeante)."""
+        """Forme de la cible a l'instant t (forme a chercher si leurres, cycle si changeante)."""
         lvl = self.level
-        if lvl.decoys:
-            return "star"
+        if lvl.decoys and self.target_shape:
+            return self.target_shape
         if lvl.morph_interval:
             return lvl.shapes[int(t / lvl.morph_interval) % len(lvl.shapes)]
         return lvl.shapes[0]

@@ -56,6 +56,7 @@ class LevelRound:
         world: Zone ou vivent les cibles (plus haute que viewport au niveau molette).
         stats: Compteurs pour le calcul du score.
         target: Cible courante (None avant le debut ou apres la fin).
+        fixed_shape: Forme a chercher pendant tout le niveau (niveau avec leurres), None sinon.
         decoys: Leurres affiches avec la cible courante.
         drop_zone: Zone de depot (niveau glisser-deposer).
         scroll_offset: Decalage vertical du defilement, en pixels.
@@ -83,6 +84,9 @@ class LevelRound:
         self.drop_zone: Target | None = None
         self.grabbing = False
         self.finished = False
+        # Niveau avec leurres : une seule forme a chercher pour tout le niveau,
+        # tiree des maintenant pour pouvoir l'annoncer sur l'ecran de consigne
+        self.fixed_shape: str | None = rng.choice(level.shapes) if level.decoys else None
         self._grab_offset: Point = (0.0, 0.0)
         self._piece_origin: Point = (0.0, 0.0)
         self._last_target_click: float | None = None
@@ -270,7 +274,7 @@ class LevelRound:
             x=x,
             y=y,
             size=lvl.size,
-            shape=self.rng.choice(lvl.shapes),
+            shape=self.fixed_shape or self.rng.choice(lvl.shapes),
             vx=math.cos(angle) * lvl.speed,
             vy=math.sin(angle) * lvl.speed,
             lifetime=lvl.lifetime,

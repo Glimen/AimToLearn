@@ -44,17 +44,18 @@ def draw_shape(
         pygame.draw.polygon(surface, outline, points, OUTLINE_WIDTH)
 
 
-def draw_target(surface: pygame.Surface, target: Target, offset_y: float) -> None:
+def draw_target(surface: pygame.Surface, target: Target, offset_y: float, show_timer: bool = True) -> None:
     """Dessine une cible et, si elle expire, l'arc du temps restant.
 
     Args:
         surface: Surface cible.
         target: Cible a dessiner.
         offset_y: Defilement vertical a retrancher (niveau molette).
+        show_timer: False pour masquer l'arc (niveau avec leurres : il designerait la cible).
     """
     y = target.y - offset_y
     draw_shape(surface, target.shape, target.x, y, target.size, COLORS["target"], COLORS["target_outline"])
-    if target.lifetime is not None:
+    if show_timer and target.lifetime is not None:
         radius = target.size / 2 + TIMER_GAP
         rect = pygame.Rect(0, 0, radius * 2, radius * 2)
         rect.center = (round(target.x), round(y))
