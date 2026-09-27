@@ -1,0 +1,3 @@
+[submodule "vendor/copper_tortoise_identity"]
+	path = vendor/copper_tortoise_identity
+	url = https://github.com/Glimen/copper_tortoise_identity.git

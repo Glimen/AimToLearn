@@ -15,18 +15,24 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
+      # Le splash est un sous-module prive : le jeton par defaut n'y a pas acces,
+      # d'ou un PAT en lecture sur copper_tortoise_identity
       - uses: actions/checkout@v7
+        with:
+          submodules: true
+          token: ${{ secrets.SPLASH_REPO_TOKEN }}
 
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
       # Memes options que build_windows.bat (le .bat passe par le lanceur "py",
-      # qui ne choisit pas forcement le Python installe par setup-python)
+      # qui ne choisit pas forcement le Python installe par setup-python).
+      # --paths / --add-data : paquet du splash et sa police
       - name: Build exe
         run: |
           pip install "pygame-ce>=2.5" pyinstaller
-          pyinstaller --noconfirm --clean --onefile --windowed --name AimToLearn main.py
+          pyinstaller --noconfirm --clean --onefile --windowed --name AimToLearn --paths vendor/copper_tortoise_identity --add-data "vendor/copper_tortoise_identity/copper_tortoise_splash/fonts;copper_tortoise_splash/fonts" main.py
 
       - uses: actions/upload-artifact@v7
         with:

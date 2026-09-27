@@ -21,7 +21,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # Le splash est un sous-module prive : le jeton par defaut n'y a pas acces,
+      # d'ou un PAT en lecture sur copper_tortoise_identity
       - uses: actions/checkout@v7
+        with:
+          submodules: true
+          token: ${{ secrets.SPLASH_REPO_TOKEN }}
 
       - uses: actions/setup-python@v7
         with:
@@ -31,11 +36,12 @@ jobs:
       - name: Tests
         run: python -m unittest discover -s tests -t .
 
-      # Version figee : c'est celle qui a ete testee en local
+      # Version figee : c'est celle qui a ete testee en local.
+      # --template : page d'accueil aux couleurs du splash (web/index.tmpl)
       - name: Build pygbag
         run: |
           pip install pygbag==0.9.3
-          python -m pygbag --build .
+          python -m pygbag --build --template web/index.tmpl .
 
       - uses: actions/configure-pages@v6
 

@@ -15,7 +15,9 @@ python -m pip install --quiet --upgrade pip || goto :error
 python -m pip install --quiet "pygame-ce>=2.5" pyinstaller || goto :error
 
 REM --onefile : un seul .exe a distribuer ; --windowed : pas de console noire
-pyinstaller --noconfirm --clean --onefile --windowed --name AimToLearn main.py || goto :error
+REM --paths / --add-data : paquet du splash (sous-module) et sa police, que
+REM PyInstaller ne trouverait pas seul. Sous-module requis : git submodule update --init
+pyinstaller --noconfirm --clean --onefile --windowed --name AimToLearn --paths vendor\copper_tortoise_identity --add-data "vendor\copper_tortoise_identity\copper_tortoise_splash\fonts;copper_tortoise_splash/fonts" main.py || goto :error
 
 echo.
 echo Termine : dist\AimToLearn.exe
