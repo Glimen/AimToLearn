@@ -70,7 +70,9 @@ async def custom_site():
         __import__(__name__).__file__ = main
 
         # now make a prompt
-        msg  = "Cliquez ou touchez l'écran pour commencer"
+        # \u00e9 plutot qu'un accent : ce bloc Python est lu en Latin-1 par
+        # pythons.js, un caractere UTF-8 s'afficherait mal
+        msg  = "Cliquez ou touchez l'\u00e9cran pour commencer"
         platform.window.infobox.innerText = msg
         print("\n"*4, f"    * Waiting for media user engagement. {msg} *" , "\n"*4)
 
