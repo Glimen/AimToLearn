@@ -71,7 +71,7 @@ LEVELS: tuple[LevelConfig, ...] = (
         instruction="La cible se déplace lentement. Suis-la et clique dessus.",
         size=90,
         speed=80.0,
-        lifetime=6.0,
+        lifetime=4.0,
     ),
     LevelConfig(
         name="Double-clic",
@@ -109,7 +109,7 @@ LEVELS: tuple[LevelConfig, ...] = (
         size=80,
     ),
     LevelConfig(
-        name="Épreuve finale",
+        name="Le grand défi",
         instruction="Petite, rapide, et elle change de forme. Bonne chance !",
         size=55,
         speed=220.0,
@@ -118,7 +118,7 @@ LEVELS: tuple[LevelConfig, ...] = (
         morph_interval=1.0,
     ),
     # Niveaux de precision : la case fait 1/4 du plus petit rond des niveaux
-    # precedents (55 px, epreuve finale), puis encore moitie moins
+    # precedents (55 px, grand defi), puis encore moitie moins
     LevelConfig(
         name="Précision",
         instruction="Une case du quadrillage s'allume : clique dessus. "

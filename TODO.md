@@ -10,7 +10,7 @@ Idées évoquées pendant le développement et pas encore traitées.
 - [ ] **Calibrer la difficulté avec de vrais joueurs débutants** (le bot de test joue trop bien) :
   - vitesse de référence `REFERENCE_THROUGHPUT` (3 bits/s = 100 %) ;
   - poids des scores (40 % précision / 30 % complétion / 30 % vitesse) ;
-  - seuil de passage (plus de 70 %) ;
+  - seuil de passage (plus de 65 %) ;
   - tailles, vitesses et durées de vie des cibles (`config/levels.py`).
 - [ ] **Écran de consigne**, options proposées mais non retenues pour l'instant :
   - bouton "Commencer" au lieu de "clique n'importe où" (évite de lancer le niveau par erreur) ;
