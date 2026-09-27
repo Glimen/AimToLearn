@@ -27,6 +27,7 @@ class LevelConfig:
         decoys: Nombre de leurres affiches en meme temps que la cible.
         morph_interval: Intervalle de changement de forme en secondes (None = jamais).
         zone_size: Taille de la zone de depot (niveau glisser-deposer uniquement).
+        grid: Vrai pour afficher un quadrillage dont la cible est une case.
     """
 
     name: str
@@ -39,6 +40,7 @@ class LevelConfig:
     decoys: int = 0
     morph_interval: float | None = None
     zone_size: int = 0
+    grid: bool = False
 
 
 LEVELS: tuple[LevelConfig, ...] = (
@@ -114,5 +116,23 @@ LEVELS: tuple[LevelConfig, ...] = (
         lifetime=4.0,
         shapes=ALL_SHAPES,
         morph_interval=1.0,
+    ),
+    # Niveaux de precision : la case fait 1/4 du plus petit rond des niveaux
+    # precedents (55 px, epreuve finale), puis encore moitie moins
+    LevelConfig(
+        name="Précision",
+        instruction="Une case du quadrillage s'allume : clique dessus. "
+        "Elle est toute petite : vise bien.",
+        size=14,
+        shapes=("square",),
+        grid=True,
+    ),
+    LevelConfig(
+        name="Précision extrême",
+        instruction="Même exercice, avec des cases deux fois plus petites. "
+        "Prends ton temps pour bien viser.",
+        size=7,
+        shapes=("square",),
+        grid=True,
     ),
 )

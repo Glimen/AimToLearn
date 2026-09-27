@@ -11,7 +11,7 @@ from lib.ui import Button, draw_text
 
 COLUMN_OFFSET = 200  # ecart horizontal entre le centre de l'ecran et chaque colonne
 BUTTON_WIDTH = 370
-ROW_HEIGHT = 70
+ROW_HEIGHT = 62
 GRID_TOP = 170
 
 
@@ -26,7 +26,7 @@ class LevelSelectScene(Scene):
         cx = SCREEN_WIDTH // 2
         self.level_buttons: list[Button] = []
         for i, level in enumerate(LEVELS):
-            # Remplissage par colonne : niveaux 1 a 6 a gauche, 7 a 11 a droite
+            # Remplissage par colonne : niveaux 1 a 7 a gauche, 8 a 13 a droite
             column, row = divmod(i, rows)
             center = (cx + (2 * column - 1) * COLUMN_OFFSET, GRID_TOP + row * ROW_HEIGHT)
             self.level_buttons.append(Button(f"{i + 1}. {level.name}", center, BUTTON_WIDTH, enabled=i <= unlocked))

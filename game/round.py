@@ -269,6 +269,8 @@ class LevelRound:
             return far_enough
 
         x, y = self._random_position(lvl.size, is_valid)
+        if lvl.grid:
+            x, y = self._snap_to_grid(x, y)
         angle = self.rng.uniform(0, 2 * math.pi)
         self.target = Target(
             x=x,
@@ -292,6 +294,17 @@ class LevelRound:
             # Approximation : trajet curseur -> piece -> zone, precision imposee par la zone
             self._fitts_distance += math.dist((x, y), (self.drop_zone.x, self.drop_zone.y))
             self._fitts_width = lvl.zone_size
+
+    def _snap_to_grid(self, x: float, y: float) -> Point:
+        """Centre la position sur la case du quadrillage qui la contient.
+
+        Le quadrillage part du coin haut-gauche du monde ; la case est bornee aux
+        cases entieres, pour ne jamais tomber sur une case coupee par le bord.
+        """
+        size = self.level.size
+        col = min(int((x - self.world.x) // size), int(self.world.w // size) - 1)
+        row = min(int((y - self.world.y) // size), int(self.world.h // size) - 1)
+        return self.world.x + (col + 0.5) * size, self.world.y + (row + 0.5) * size
 
     def _spawn_decoys(self) -> None:
         """Place les leurres, d'une autre forme que la cible, sans chevauchement."""

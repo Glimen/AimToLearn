@@ -173,5 +173,24 @@ class ScrollTest(unittest.TestCase):
         self.assertEqual(game_round.scroll_offset, 0.0)
 
 
+class GridTest(unittest.TestCase):
+    """Niveau quadrillage : la cible est toujours une case entiere."""
+
+    def test_target_is_a_full_cell(self) -> None:
+        for size in (14, 7):
+            game_round = make_round(total=30, size=size, shapes=("square",), grid=True)
+            for _ in range(30):
+                target = game_round.target
+                left, top = target.x - size / 2 - VIEWPORT.x, target.y - size / 2 - VIEWPORT.y
+                self.assertEqual(left % size, 0)
+                self.assertEqual(top % size, 0)
+                self.assertLessEqual(left + size, VIEWPORT.w)
+                self.assertLessEqual(top + size, VIEWPORT.h)
+                # Un clic dans un coin de la case compte, juste a cote non
+                self.assertEqual(game_round.press(1, (target.x + size / 2 + 1, target.y)), rnd.MISS)
+                corner = (target.x - size / 2 + 0.5, target.y + size / 2 - 0.5)
+                self.assertEqual(game_round.press(1, corner), rnd.HIT)
+
+
 if __name__ == "__main__":
     unittest.main()

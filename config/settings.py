@@ -32,7 +32,7 @@ HUD_HEIGHT: int = 70  # bandeau d'infos en haut, exclu de la zone de jeu
 
 # --- Regles ---
 TARGETS_PER_LEVEL: int = 15
-PASS_THRESHOLD: float = 0.5  # score global a depasser pour debloquer le niveau suivant
+PASS_THRESHOLD: float = 0.7  # score global a depasser pour debloquer le niveau suivant
 DOUBLE_CLICK_DELAY: float = 0.4  # secondes max entre les deux clics d'un double-clic
 MIN_SPAWN_DISTANCE: float = 200.0  # distance min curseur -> nouvelle cible (px)
 MIN_DRAG_DISTANCE: float = 350.0  # distance min piece -> zone de depot (px)
@@ -76,4 +76,5 @@ COLORS: dict[str, tuple[int, ...]] = {
     "overlay": (0, 0, 0, 180),
     "scrollbar": (70, 80, 100),
     "highlight": (255, 210, 80),
+    "grid": (55, 62, 80),
 }

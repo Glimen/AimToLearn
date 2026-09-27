@@ -9,7 +9,7 @@ from config.levels import GESTURE_DRAG, GESTURE_RIGHT_CLICK, GESTURE_SCROLL, LEV
 from config.settings import COLORS, END_OF_LEVEL_DELAY, HUD_HEIGHT, SCREEN_HEIGHT, SCREEN_WIDTH
 from game import round as rnd
 from game.demo import GestureDemo
-from game.render import draw_drop_zone, draw_shape, draw_target
+from game.render import draw_drop_zone, draw_grid, draw_lit_cell, draw_shape, draw_target
 from game.scene_manager import Scene, SceneManager
 from game.scoring import Session, compute_level_score
 from lib.geometry import Area
@@ -149,11 +149,16 @@ class LevelScene(Scene):
         offset = self.round.scroll_offset
         # Tout ce qui est dans le monde du niveau est coupe au bord de la zone de jeu
         surface.set_clip(pygame.Rect(self.viewport))
+        if self.level.grid:
+            # Quadrillage aligne sur le coin de la zone de jeu, comme le placement des cibles
+            draw_grid(surface, pygame.Rect(self.viewport), self.level.size, (self.viewport.x, self.viewport.y))
         if self.round.drop_zone is not None:
             draw_drop_zone(surface, self.round.drop_zone, offset)
         for decoy in self.round.decoys:
             draw_shape(surface, decoy.shape, decoy.x, decoy.y - offset, decoy.size, COLORS["target"], COLORS["target_outline"])
-        if self.round.target is not None:
+        if self.round.target is not None and self.level.grid:
+            draw_lit_cell(surface, self.round.target, offset)
+        elif self.round.target is not None:
             # Avec des leurres, l'arc du temps restant designerait la cible : on le masque
             draw_target(surface, self.round.target, offset, show_timer=not self.round.decoys)
         surface.set_clip(None)

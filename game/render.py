@@ -64,6 +64,33 @@ def draw_target(surface: pygame.Surface, target: Target, offset_y: float, show_t
         pygame.draw.arc(surface, COLORS["timer"], rect, start, start + 2 * math.pi * target.remaining_ratio, TIMER_WIDTH)
 
 
+def draw_grid(surface: pygame.Surface, area: pygame.Rect, cell: int, origin: tuple[float, float]) -> None:
+    """Dessine un quadrillage de cases de cote cell, aligne sur le point origin.
+
+    Args:
+        surface: Surface cible.
+        area: Zone a quadriller.
+        cell: Cote d'une case (px).
+        origin: Coin d'une case quelconque ; les lignes passent par ce point.
+    """
+    color = COLORS["grid"]
+    # Premiere ligne visible : origine ramenee juste avant le bord de la zone
+    x = area.left + (origin[0] - area.left) % cell
+    while x < area.right:
+        pygame.draw.line(surface, color, (x, area.top), (x, area.bottom - 1))
+        x += cell
+    y = area.top + (origin[1] - area.top) % cell
+    while y < area.bottom:
+        pygame.draw.line(surface, color, (area.left, y), (area.right - 1, y))
+        y += cell
+
+
+def draw_lit_cell(surface: pygame.Surface, target: Target, offset_y: float) -> None:
+    """Dessine la case allumee du quadrillage (sans contour : il cacherait une case de 7 px)."""
+    rect = pygame.Rect(round(target.x - target.size / 2), round(target.y - offset_y - target.size / 2), target.size, target.size)
+    pygame.draw.rect(surface, COLORS["highlight"], rect)
+
+
 def draw_drop_zone(surface: pygame.Surface, zone: Target, offset_y: float) -> None:
     """Dessine la zone de depot du glisser-deposer (carre vert en contour)."""
     rect = pygame.Rect(0, 0, zone.size, zone.size)

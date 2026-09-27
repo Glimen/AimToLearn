@@ -18,7 +18,7 @@ from config.levels import (
     LevelConfig,
 )
 from config.settings import COLORS
-from game.render import draw_drop_zone, draw_shape, draw_target
+from game.render import draw_drop_zone, draw_grid, draw_lit_cell, draw_shape, draw_target
 from game.targets import Target
 from lib.ui import draw_text
 
@@ -104,7 +104,12 @@ class GestureDemo:
             draw_drop_zone(surface, frame.zone, 0)
         for decoy in frame.decoys:
             draw_shape(surface, decoy.shape, decoy.x, decoy.y, decoy.size, COLORS["target"], COLORS["target_outline"])
-        if frame.target is not None:
+        if self.level.grid and frame.target is not None:
+            # Quadrillage aligne sur la case allumee
+            half = self.level.size / 2
+            draw_grid(surface, area, self.level.size, (frame.target.x - half, frame.target.y - half))
+            draw_lit_cell(surface, frame.target, 0)
+        elif frame.target is not None:
             draw_target(surface, frame.target, 0, show_timer=not self.level.decoys)
         if frame.ring is not None:
             pygame.draw.circle(surface, COLORS["hit"], frame.ring, 22, 3)

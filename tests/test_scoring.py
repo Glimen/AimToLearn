@@ -44,11 +44,11 @@ class LevelScoreTest(unittest.TestCase):
         self.assertFalse(score.passed)
 
     def test_threshold_is_strict(self) -> None:
-        # precision 1 (0.4) + completion 1/3 (0.1) + vitesse 0 = 0.5 pile -> pas assez
-        stats = LevelStats(total_targets=3, clicks=1, clicks_on_target=1, hits=1)
+        # precision 1 (0.4) + completion 1 (0.3) + vitesse 0 = 0.7 pile -> pas assez
+        stats = LevelStats(total_targets=1, clicks=1, clicks_on_target=1, hits=1)
         stats.samples = [(0, 100, 1.0)]  # distance nulle -> 0 bit
         score = compute_level_score(stats)
-        self.assertTrue(math.isclose(score.global_score, 0.5))
+        self.assertTrue(math.isclose(score.global_score, 0.7))
         self.assertFalse(score.passed)
 
 
@@ -58,6 +58,7 @@ class SessionTest(unittest.TestCase):
     def test_summary_uses_last_attempt(self) -> None:
         bad = compute_level_score(LevelStats(total_targets=10, clicks=10, clicks_on_target=0, missed=10))
         good_stats = LevelStats(total_targets=10, clicks=10, clicks_on_target=10, hits=10)
+        good_stats.samples = [(700, 100, 1.0)] * 10  # vitesse non nulle : au-dessus de 70 %
         good = compute_level_score(good_stats)
         session = Session()
         session.record(0, bad)
